@@ -1,9 +1,12 @@
+using AzureFunctions.Ioc.Configurations;
+using AzureFunctions.Ioc.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: FunctionsStartup(typeof(azure_functions_ioc.Startup))]
+[assembly: FunctionsStartup(typeof(AzureFunctions.Ioc.Startup))]
 
-namespace azure_functions_ioc
+namespace AzureFunctions.Ioc
 {
     public class Startup : FunctionsStartup
     {
@@ -16,6 +19,12 @@ namespace azure_functions_ioc
             // });
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
+            builder.Services.AddOptions<AppInfo>()
+                            .Configure<IConfiguration>((settings, configuration)
+                                => configuration.GetSection("AppInfo").Bind(settings));
+
+            builder.Services.AddTransient<IHelloWorld, HelloWorld>();
+
         }
     }
 }
